@@ -68,7 +68,7 @@ const worker = async (client) => {
             while (GetOpenOrders.length > 0) {
                 let now = new Date().getTime();
                 if( (now - lastPriceTime) > (PRICE_DECREASE_INTERVAL*60000) ) {
-                    let price = lastPriceAsk - (PRICE_DIFF * (100 - PRICE_DECREASE_PERCENT) / 100);
+                    let price = lastPriceAsk - (PRICE_DIFF * (PRICE_DECREASE_PERCENT) / 100);
                     console.log(`Cancel order, decrease sell price (${PRICE_DECREASE_PERCENT}%) to $${price}`);
                     await client.CancelOpenOrders({ symbol: "SOL_USDC" });
                     await sellfun(client, price);
