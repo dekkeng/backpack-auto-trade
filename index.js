@@ -8,7 +8,13 @@ require('dotenv').config()
 const API_KEY = process.env.BACKPACK_API_KEY
 const API_SECRET = process.env.BACKPACK_API_SECRET
 const PRICE_DIFF = process.env.PRICE_DIFF*1
+const PRICE_DECREASE_INTERVAL = process.env.PRICE_DECREASE_INTERVAL*1
+const PRICE_DECREASE_PERCENT = process.env.PRICE_DECREASE_PERCENT*1
 /////////////
+
+if(API_KEY == '' || API_SECRET == '' || PRICE_DIFF == '' || PRICE_DECREASE_INTERVAL == '' || PRICE_DECREASE_PERCENT == '') {
+    throw new Error(`Invalid config..`);
+}
 
 function delay(ms) {
     return new Promise(resolve => {
@@ -49,15 +55,25 @@ function getNowFormatDate() {
 
 let startBalance = 0;
 let profit = 0;
-let lastPriceAsk = 999;
+let lastPriceAsk = 0;
+let lastPriceTime = new Date().getTime();
 let userbalance = {};
 
 const worker = async (client) => {
     try {
         let GetOpenOrders = await client.GetOpenOrders({ symbol: "SOL_USDC" });
         if(GetOpenOrders.length > 0) {
-            console.log(getNowFormatDate(), `Waiting to sell ${GetOpenOrders[0].quantity} SOL at $${GetOpenOrders[0].price} (${(GetOpenOrders[0].price * GetOpenOrders[0].quantity).toFixed(2)} USDC)...`);    
+            if(lastPriceAsk == 0) lastPriceAsk = GetOpenOrders[0].price;
+            console.log(getNowFormatDate(), `Waiting ${PRICE_DECREASE_INTERVAL} mins to sell ${GetOpenOrders[0].quantity} SOL at $${GetOpenOrders[0].price} (${(GetOpenOrders[0].price * GetOpenOrders[0].quantity).toFixed(2)} USDC)...`);    
             while (GetOpenOrders.length > 0) {
+                let now = new Date().getTime();
+                if( (now - lastPriceTime) > (PRICE_DECREASE_INTERVAL*60000) ) {
+                    let price = lastPriceAsk - (PRICE_DIFF * (100 - PRICE_DECREASE_PERCENT) / 100);
+                    console.log(`Cancel order, decrease sell price (${PRICE_DECREASE_PERCENT}%) to $${price}`);
+                    await client.CancelOpenOrders({ symbol: "SOL_USDC" });
+                    await sellfun(client, price);
+                }
+
                 await delay(3000);
                 GetOpenOrders = await client.GetOpenOrders({ symbol: "SOL_USDC" });
             }
@@ -80,7 +96,8 @@ const worker = async (client) => {
             await buyfun(client);
         } else {
             let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
-            await sellfun(client, lastBuyPrice);
+            let price = lastBuyPrice + PRICE_DIFF;
+            await sellfun(client, price);
         }
     } catch (e) {
         console.log(getNowFormatDate(), `Try again... (${e.message})`);
@@ -93,12 +110,13 @@ const worker = async (client) => {
 
 
 
-const sellfun = async (client, lastBuyPrice) => {
+const sellfun = async (client, price) => {
     console.log("======= SELLING ======");
     userbalance = await client.Balance();    
-    lastPriceAsk = (lastBuyPrice + PRICE_DIFF).toFixed(2);
+    lastPriceAsk = (price).toFixed(2);
     let quantitys = (userbalance.SOL.available - 0.02).toFixed(2).toString();
     console.log(getNowFormatDate(), `Sell limit ${quantitys} SOL at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} USDC)`);
+    console.log("SELLING "+ lastPriceAsk.toString());
     let orderResultAsk = await client.ExecuteOrder({
         orderType: "Limit",
         price: lastPriceAsk.toString(),
@@ -107,7 +125,7 @@ const sellfun = async (client, lastBuyPrice) => {
         symbol: "SOL_USDC",
         timeInForce: "GTC"
     })
-    
+    lastPriceTime = new Date().getTime();
     worker(client);
 }
 
@@ -115,7 +133,7 @@ const buyfun = async (client) => {
     console.log("======= BUYING ======");
     let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
     let quantitys = ((userbalance.USDC.available - 2) / lastBuyPrice).toFixed(2).toString();
-    console.log(getNowFormatDate(), );
+    console.log(getNowFormatDate(), "BUYING "+ lastBuyPrice.toString());
     let orderResultBid = await client.ExecuteOrder({
         orderType: "Limit",
         price: lastBuyPrice.toString(),
