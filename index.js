@@ -97,7 +97,7 @@ const sellfun = async (client, lastBuyPrice) => {
     console.log("======= SELLING ======");
     userbalance = await client.Balance();    
     lastPriceAsk = (lastBuyPrice + PRICE_DIFF).toFixed(2);
-    let quantitys = (userbalance.SOL.available).toFixed(2).toString();
+    let quantitys = (userbalance.SOL.available - 0.02).toFixed(2).toString();
     console.log(getNowFormatDate(), `Sell limit ${quantitys} SOL at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} USDC)`);
     let orderResultAsk = await client.ExecuteOrder({
         orderType: "Limit",
