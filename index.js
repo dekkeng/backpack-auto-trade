@@ -144,7 +144,8 @@ const buyfun = async (client) => {
     })
     if (orderResultBid?.status == "Filled" && orderResultBid?.side == "Bid") {
         console.log(getNowFormatDate(), `Bought ${quantitys} SOL at $${lastBuyPrice} USDC`, `Order number: ${orderResultBid.id}`);
-        sellfun(client, lastBuyPrice*1);
+        let price = lastBuyPrice + PRICE_DIFF;
+        sellfun(client, price);
     } else {
         if (orderResultBid?.status == 'Expired'){
             throw new Error(`Buying ${quantitys} SOL at $${lastBuyPrice} USDC Expired | Retrying...`);
