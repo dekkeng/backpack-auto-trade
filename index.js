@@ -77,6 +77,7 @@ const worker = async (client) => {
                 await delay(3000);
                 GetOpenOrders = await client.GetOpenOrders({ symbol: "SOL_USDC" });
             }
+            await delay(5000);
         }
 
         userbalance = await client.Balance();
