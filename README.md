@@ -23,10 +23,15 @@ How to use
 5. ```cp .env.sample .env```
 
 6. Edit ```.env``` file, change 
+
 ```BACKPACK_API_KEY```          = Your Key From Backpack
+
 ```BACKPACK_API_SECRET```       = Your Secret From Backpack
+
 ```PRICE_DIFF```                = Different price from buy price to be use for ask price
+
 ```PRICE_DECREASE_INTERVAL```   = Interval to decrease ask price (minutes)
+
 ```PRICE_DECREASE_PERCENT```    = Percentage of PRICE_DIFF to decrease ask price each interval
 
 7. Start
