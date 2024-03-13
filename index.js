@@ -116,7 +116,6 @@ const sellfun = async (client, price) => {
     lastPriceAsk = (price).toFixed(2);
     let quantitys = (userbalance.SOL.available - 0.02).toFixed(2).toString();
     console.log(getNowFormatDate(), `Sell limit ${quantitys} SOL at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} USDC)`);
-    console.log("SELLING "+ lastPriceAsk.toString());
     let orderResultAsk = await client.ExecuteOrder({
         orderType: "Limit",
         price: lastPriceAsk.toString(),
@@ -133,7 +132,6 @@ const buyfun = async (client) => {
     console.log("======= BUYING ======");
     let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
     let quantitys = ((userbalance.USDC.available - 2) / lastBuyPrice).toFixed(2).toString();
-    console.log(getNowFormatDate(), "BUYING "+ lastBuyPrice.toString());
     let orderResultBid = await client.ExecuteOrder({
         orderType: "Limit",
         price: lastBuyPrice.toString(),
