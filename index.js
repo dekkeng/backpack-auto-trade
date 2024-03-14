@@ -53,8 +53,20 @@ function getNowFormatDate() {
     return currentdate;
 }
 
-let startBalance = 0;
-let profit = 0;
+const checkBalance = async (client) => {
+    userbalance = await client.Balance();
+    balanceSol = 0 
+    if (userbalance.SOL) {
+        balanceSol = userbalance.SOL.available
+    }
+    balanceUsdc = 0;
+    if (userbalance.USDC) {
+        balanceUsdc = userbalance.USDC.available
+    }
+}
+
+let balanceSol = 0;
+let balanceUsdc = 0;
 let lastPriceAsk = 0;
 let lastPriceTime = new Date().getTime();
 let userbalance = {};
@@ -80,15 +92,7 @@ const worker = async (client) => {
             }
         }
 
-        userbalance = await client.Balance();
-        let balanceSol = 0;
-        if (userbalance.SOL) {
-            balanceSol = userbalance.SOL.available
-        }
-        let balanceUsdc = 0;
-        if (userbalance.USDC) {
-            balanceUsdc = userbalance.USDC.available
-        }
+        await checkBalance(client);
 
         console.log("\n============================")
         console.log(getNowFormatDate(), `My Account Infos: ${balanceSol} $SOL | ${balanceUsdc} $USDC`);
@@ -116,43 +120,56 @@ const worker = async (client) => {
 
 const sellfun = async (client, price) => {
     console.log("======= SELLING ======");
-    userbalance = await client.Balance();    
-    lastPriceAsk = (price).toFixed(2);
-    let quantitys = (userbalance.SOL.available - 0.02).toFixed(2).toString();
-    console.log(getNowFormatDate(), `Sell limit ${quantitys} SOL at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} USDC)`);
-    let orderResultAsk = await client.ExecuteOrder({
-        orderType: "Limit",
-        price: lastPriceAsk.toString(),
-        quantity: quantitys,
-        side: "Ask",
-        symbol: "SOL_USDC",
-        timeInForce: "GTC"
-    })
-    lastPriceTime = new Date().getTime();
-    worker(client);
+    await checkBalance(client);
+    
+    if(balanceSol < 0.1) {
+        await delay(3000);
+        sellfun(client, price);
+    } else {
+        lastPriceAsk = (price).toFixed(2);
+        let quantitys = (userbalance.SOL.available - 0.02).toFixed(2).toString();
+        console.log(getNowFormatDate(), `Sell limit ${quantitys} SOL at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} USDC)`);
+        let orderResultAsk = await client.ExecuteOrder({
+            orderType: "Limit",
+            price: lastPriceAsk.toString(),
+            quantity: quantitys,
+            side: "Ask",
+            symbol: "SOL_USDC",
+            timeInForce: "GTC"
+        })
+        lastPriceTime = new Date().getTime();
+        worker(client);
+    }
 }
 
 const buyfun = async (client) => {
     console.log("======= BUYING ======");
-    let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
-    let quantitys = ((userbalance.USDC.available - 2) / lastBuyPrice).toFixed(2).toString();
-    let orderResultBid = await client.ExecuteOrder({
-        orderType: "Limit",
-        price: lastBuyPrice.toString(),
-        quantity: quantitys,
-        side: "Bid",
-        symbol: "SOL_USDC",
-        timeInForce: "IOC"
-    })
-    if (orderResultBid?.status == "Filled" && orderResultBid?.side == "Bid") {
-        console.log(getNowFormatDate(), `Bought ${quantitys} SOL at $${lastBuyPrice} USDC`, `Order number: ${orderResultBid.id}`);
-        let price = lastBuyPrice + PRICE_DIFF;
-        sellfun(client, price);
+    await checkBalance(client);
+
+    if(balanceUsdc < 5) {
+        await delay(3000);
+        buyfun(client);
     } else {
-        if (orderResultBid?.status == 'Expired'){
-            throw new Error(`Buying ${quantitys} SOL at $${lastBuyPrice} USDC Expired | Retrying...`);
-        } else{
-            throw new Error(orderResultBid?.status);
+        let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
+        let quantitys = ((userbalance.USDC.available - 2) / lastBuyPrice).toFixed(2).toString();
+        let orderResultBid = await client.ExecuteOrder({
+            orderType: "Limit",
+            price: lastBuyPrice.toString(),
+            quantity: quantitys,
+            side: "Bid",
+            symbol: "SOL_USDC",
+            timeInForce: "IOC"
+        })
+        if (orderResultBid?.status == "Filled" && orderResultBid?.side == "Bid") {
+            console.log(getNowFormatDate(), `Bought ${quantitys} SOL at $${lastBuyPrice} USDC`, `Order number: ${orderResultBid.id}`);
+            let price = lastBuyPrice + PRICE_DIFF;
+            sellfun(client, price);
+        } else {
+            if (orderResultBid?.status == 'Expired'){
+                throw new Error(`Buying ${quantitys} SOL at $${lastBuyPrice} USDC Expired | Retrying...`);
+            } else{
+                throw new Error(orderResultBid?.status);
+            }
         }
     }
 }
