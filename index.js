@@ -71,6 +71,7 @@ const worker = async (client) => {
                     let price = lastPriceAsk - (PRICE_DIFF * (PRICE_DECREASE_PERCENT) / 100);
                     console.log(`Cancel order, decrease sell price (${PRICE_DECREASE_PERCENT}%) to $${price}`);
                     await client.CancelOpenOrders({ symbol: "SOL_USDC" });
+                    await delay(3000);
                     await sellfun(client, price);
                 }
 
