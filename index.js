@@ -119,51 +119,66 @@ const worker = async (client) => {
 
 
 const sellfun = async (client, price) => {
-    console.log("======= SELLING ======");
-    await checkBalance(client);
-    if(balanceSol < 0.1) {
+    try {
+        console.log("======= SELLING ======");
+        await checkBalance(client);
+        if (balanceSol < 0.1) {
+            return;
+        } 
+        lastPriceAsk = (price).toFixed(2);
+        let quantitys = (userbalance.SOL.available - 0.02).toFixed(2).toString();
+        console.log(getNowFormatDate(), `Sell limit ${quantitys} SOL at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} USDC)`);
+        let orderResultAsk = await client.ExecuteOrder({
+            orderType: "Limit",
+            price: lastPriceAsk.toString(),
+            quantity: quantitys,
+            side: "Ask",
+            symbol: "SOL_USDC",
+            timeInForce: "GTC"
+        })
+        lastPriceTime = new Date().getTime();
+        worker(client);
+    } catch (e) {
+        console.log(getNowFormatDate(), `Try again... (${e.message})`);
+
         await delay(3000);
         sellfun(client, price);
-        return
-    } 
-    lastPriceAsk = (price).toFixed(2);
-    let quantitys = (userbalance.SOL.available - 0.02).toFixed(2).toString();
-    console.log(getNowFormatDate(), `Sell limit ${quantitys} SOL at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} USDC)`);
-    let orderResultAsk = await client.ExecuteOrder({
-        orderType: "Limit",
-        price: lastPriceAsk.toString(),
-        quantity: quantitys,
-        side: "Ask",
-        symbol: "SOL_USDC",
-        timeInForce: "GTC"
-    })
-    lastPriceTime = new Date().getTime();
-    worker(client);
+    }
 }
 
 const buyfun = async (client) => {
-    console.log("======= BUYING ======");
-    await checkBalance(client);
-    let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
-    let quantitys = ((userbalance.USDC.available - 2) / lastBuyPrice).toFixed(2).toString();
-    let orderResultBid = await client.ExecuteOrder({
-        orderType: "Limit",
-        price: lastBuyPrice.toString(),
-        quantity: quantitys,
-        side: "Bid",
-        symbol: "SOL_USDC",
-        timeInForce: "IOC"
-    })
-    if (orderResultBid?.status == "Filled" && orderResultBid?.side == "Bid") {
-        console.log(getNowFormatDate(), `Bought ${quantitys} SOL at $${lastBuyPrice} USDC`, `Order number: ${orderResultBid.id}`);
-        let price = lastBuyPrice + PRICE_DIFF;
-        sellfun(client, price);
-    } else {
-        if (orderResultBid?.status == 'Expired'){
-            throw new Error(`Buying ${quantitys} SOL at $${lastBuyPrice} USDC Expired | Retrying...`);
-        } else{
-            throw new Error(orderResultBid?.status);
+    try {
+        console.log("======= BUYING ======");
+        await checkBalance(client);
+        if (balanceUsdc < 5) {
+            return;
+        } 
+        let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
+        let quantitys = ((userbalance.USDC.available - 2) / lastBuyPrice).toFixed(2).toString();
+        let orderResultBid = await client.ExecuteOrder({
+            orderType: "Limit",
+            price: lastBuyPrice.toString(),
+            quantity: quantitys,
+            side: "Bid",
+            symbol: "SOL_USDC",
+            timeInForce: "IOC"
+        })
+        if (orderResultBid?.status == "Filled" && orderResultBid?.side == "Bid") {
+            console.log(getNowFormatDate(), `Bought ${quantitys} SOL at $${lastBuyPrice} USDC`, `Order number: ${orderResultBid.id}`);
+            let price = lastBuyPrice + PRICE_DIFF;
+            sellfun(client, price);
+        } else {
+            if (orderResultBid?.status == 'Expired'){
+                throw new Error(`Buying ${quantitys} SOL at $${lastBuyPrice} USDC Expired | Retrying...`);
+            } else{
+                throw new Error(orderResultBid?.status);
+            }
         }
+    } catch (e) {
+        console.log(getNowFormatDate(), `Try again... (${e.message})`);
+
+        await delay(3000);
+        buyfun(client);
     }
 }
 
