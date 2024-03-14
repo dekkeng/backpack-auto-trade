@@ -79,7 +79,20 @@ How to use
 
 5. ```cp .env.sample .env```
 
-6. Edit ```.env``` file, change 
+6. Edit ```.env``` file, change config and save file
+
+7. Start
+
+```
+npm i
+```
+```
+npm start
+```
+
+----------------------------
+Config list
+----------------------------
 
 ```BACKPACK_API_KEY```          = Your Key From Backpack
 
@@ -96,17 +109,6 @@ How to use
 ```MIN_SYMBOL_1```              = Minimum amount of 1st token that should be available (eg. 0.1 for SOL, 5 for USDC)
 
 ```MIN_SYMBOL_2```              = Minimum amount of 2nd token that should be available (eg. 0.1 for SOL, 5 for USDC)
-
-
-7. Start
-
-```
-npm i
-```
-```
-npm start
-```
-
 
 ----------------------------
 VPS additional information
