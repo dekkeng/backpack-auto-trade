@@ -8,7 +8,7 @@ Backpack auto trade script:
 
 **สำหรับรันบน Windows**
 
-1. โหลด (Nodejs)[https://nodejs.org/en/download/] v18+ ถ้ามีแล้วข้ามได้ ลงให้เรียบร้อย Next รัวๆ
+1. โหลด [Nodejs](https://nodejs.org/en/download/) v18+ ถ้ามีแล้วข้ามได้ ลงให้เรียบร้อย Next รัวๆ
 
 2. โหลด [Git](https://git-scm.com/downloads) ลงให้เรียบร้อย Next รัวๆ
 
