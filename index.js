@@ -94,7 +94,7 @@ const worker = async (client) => {
 
         if (balanceUsdc > 5) {
             await buyfun(client);
-        } else if(balanceSol > 0.03) {
+        } else if(balanceSol > 0.1) {
             let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
             let price = lastBuyPrice + PRICE_DIFF;
             await sellfun(client, price);
