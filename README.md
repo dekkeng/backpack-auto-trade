@@ -34,6 +34,13 @@ How to use
 
 ```PRICE_DECREASE_PERCENT```    = Percentage of PRICE_DIFF to decrease ask price each interval
 
+```SYMBOL```                    = Symbol to trad (eg. SOL_USDC)
+
+```MIN_SYMBOL_1```              = Minimum amount of 1st token that should be available (eg. 0.1 for SOL, 5 for USDC)
+
+```MIN_SYMBOL_2```              = Minimum amount of 2nd token that should be available (eg. 0.1 for SOL, 5 for USDC)
+
+
 7. Start
 
 ```
