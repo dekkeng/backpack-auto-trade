@@ -123,7 +123,6 @@ const sellfun = async (client, price) => {
 
     if(balanceSol < 0.1) {
         await delay(3000);
-        sellfun(client, price);
     } else {
         console.log("======= SELLING ======");
         lastPriceAsk = (price).toFixed(2);
@@ -147,7 +146,6 @@ const buyfun = async (client) => {
 
     if(balanceUsdc < 5) {
         await delay(3000);
-        buyfun(client);
     } else {
         console.log("======= BUYING ======");
         let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
