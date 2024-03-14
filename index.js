@@ -140,9 +140,6 @@ const sellfun = async (client, price) => {
         worker(client);
     } catch (e) {
         console.log(getNowFormatDate(), `Try again... (${e.message})`);
-
-        await delay(3000);
-        sellfun(client, price);
     }
 }
 
@@ -176,9 +173,6 @@ const buyfun = async (client) => {
         }
     } catch (e) {
         console.log(getNowFormatDate(), `Try again... (${e.message})`);
-
-        await delay(3000);
-        buyfun(client);
     }
 }
 
