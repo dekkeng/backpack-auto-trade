@@ -105,22 +105,19 @@ VPS additional information
 ----------------------------
 If you want to run this script on VPS or server, you can use screen to run this.
 
-1. 
 ```
 sudo apt install -y screen
 ```
-2. 
+
 ```
 screen -S backpack
 ```
-3. 
+
 ```
 npm start
 ```
-4. 
+
 ```
 Ctrl + D + A
 ```
 Then you can close your console and the script will continue running on your server. If you want to reaccess the screen, you can use ```screen -r backpack``` to reopen it.
-
-Source from: [catsats](https://github.com/catsats)
