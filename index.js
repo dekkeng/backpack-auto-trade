@@ -77,7 +77,6 @@ const worker = async (client) => {
                 await delay(3000);
                 GetOpenOrders = await client.GetOpenOrders({ symbol: "SOL_USDC" });
             }
-            await delay(5000);
         }
 
         userbalance = await client.Balance();
@@ -95,10 +94,13 @@ const worker = async (client) => {
 
         if (balanceUsdc > 5) {
             await buyfun(client);
-        } else {
+        } else if(balanceSol > 0.03) {
             let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
             let price = lastBuyPrice + PRICE_DIFF;
             await sellfun(client, price);
+        } else {
+            await delay(5000);
+            worker(client);
         }
     } catch (e) {
         console.log(getNowFormatDate(), `Try again... (${e.message})`);
