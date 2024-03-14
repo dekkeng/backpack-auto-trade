@@ -119,13 +119,13 @@ const worker = async (client) => {
 
 
 const sellfun = async (client, price) => {
-    console.log("======= SELLING ======");
     await checkBalance(client);
-    
+
     if(balanceSol < 0.1) {
         await delay(3000);
         sellfun(client, price);
     } else {
+        console.log("======= SELLING ======");
         lastPriceAsk = (price).toFixed(2);
         let quantitys = (userbalance.SOL.available - 0.02).toFixed(2).toString();
         console.log(getNowFormatDate(), `Sell limit ${quantitys} SOL at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} USDC)`);
@@ -143,13 +143,13 @@ const sellfun = async (client, price) => {
 }
 
 const buyfun = async (client) => {
-    console.log("======= BUYING ======");
     await checkBalance(client);
 
     if(balanceUsdc < 5) {
         await delay(3000);
         buyfun(client);
     } else {
+        console.log("======= BUYING ======");
         let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: "SOL_USDC" });
         let quantitys = ((userbalance.USDC.available - 2) / lastBuyPrice).toFixed(2).toString();
         let orderResultBid = await client.ExecuteOrder({
