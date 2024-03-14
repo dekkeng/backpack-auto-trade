@@ -111,7 +111,7 @@ npm start
 ----------------------------
 VPS additional information
 ----------------------------
-If you want to run this script on VPS or server, you can use screen to run this.
+If you want to run this script on Linux/Ubuntu server, you can use screen to run this.
 
 ```
 sudo apt install -y screen
