@@ -5,8 +5,7 @@ Backpack auto trade script:
 
 
 **Requirement:**
-- Have more than 10 $USDC in backpack exchange
-- Currently support only $SOL/$USDC pair
+- Recommend at least $10 value in backpack exchange
 - Install [Nodejs](https://www.geeksforgeeks.org/installation-of-node-js-on-windows) (Version >= v18.16.0) , [Git](https://git-scm.com/downloads) on your PC or VPS
 
 ----------------------------
