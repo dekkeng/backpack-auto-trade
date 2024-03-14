@@ -69,7 +69,7 @@
 ----------------------------
 How to use
 ----------------------------
-1. Create account: [Backpack](https://backpack.exchange/refer/6ee71a32-9bf4-42fe-b13c-896c32745bc4)
+1. Create account: [Backpack](https://backpack.exchange/refer/6ee71a32-9bf4-42fe-b13c-896c32745bc4) KYC, deposit at least 50 USDC
 
 2. Create backpack API: https://backpack.exchange/settings/api-keys
 
