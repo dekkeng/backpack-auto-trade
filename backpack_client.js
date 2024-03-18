@@ -169,7 +169,7 @@ class BackpackClient {
             .export({ format: "der", type: "spki" })
             .toString("base64");
         if (pubkeyFromPrivateKey != pubkey) {
-            throw new Error("错误的秘钥对，请检查私钥公钥是否匹配");
+            throw new Error("Wrong secret key pair, please check whether the private key and public key match");
         }
     }
     /**
