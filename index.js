@@ -129,7 +129,7 @@ const sellfun = async (client) => {
             lastPriceAsk = ask;
         }
         lastPriceAsk = (lastPriceAsk*1).toFixed(6);
-        let quantitys = (userbalance[symbol_1].available).toFixed(QUANTITY_DECIMAL_1).toString();
+        let quantitys = (userbalance[symbol_1].available - (MIN_SYMBOL_1/2)).toFixed(QUANTITY_DECIMAL_1).toString();
         console.log(getNowFormatDate(), `Sell limit ${quantitys} ${symbol_1} at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(6)} ${symbol_2})`);
         let orderResultAsk = await client.ExecuteOrder({
             orderType: "Limit",
