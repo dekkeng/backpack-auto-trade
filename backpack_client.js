@@ -10,8 +10,8 @@ const qs_1 = __importDefault(require("qs"));
 const ws_1 = __importDefault(require("ws"));
 const BACKOFF_EXPONENT = 1.5;
 const DEFAULT_TIMEOUT_MS = 5000;
-// const BASE_URL = "https://api.backpack.exchange/";
-const BASE_URL = "https://api.cf.backpack.exchange/";
+const BASE_URL = "https://api.backpack.exchange/";
+//const BASE_URL = "https://api.cf.backpack.exchange/";
 const instructions = {
     public: new Map([
         ["assets", { url: `${BASE_URL}api/v1/assets`, method: "GET" }],

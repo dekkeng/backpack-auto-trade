@@ -13,6 +13,8 @@ const PRICE_DECREASE_PERCENT = process.env.PRICE_DECREASE_PERCENT*1
 const SYMBOL = process.env.SYMBOL
 const MIN_SYMBOL_1 = process.env.MIN_SYMBOL_1*1
 const MIN_SYMBOL_2 = process.env.MIN_SYMBOL_2*1
+const QUANTITY_DECIMAL_1 = process.env.QUANTITY_DECIMAL_1*1
+const QUANTITY_DECIMAL_2 = process.env.QUANTITY_DECIMAL_2*1
 /////////////
 
 if(API_KEY == '' || API_SECRET == '' || PRICE_DIFF == '' || PRICE_DECREASE_INTERVAL == '' || PRICE_DECREASE_PERCENT == '') {
@@ -127,7 +129,7 @@ const sellfun = async (client) => {
             lastPriceAsk = ask;
         }
         lastPriceAsk = (lastPriceAsk*1).toFixed(6);
-        let quantitys = (userbalance[symbol_1].available - (MIN_SYMBOL_1/2)).toFixed(6).toString();
+        let quantitys = (userbalance[symbol_1].available).toFixed(QUANTITY_DECIMAL_1).toString();
         console.log(getNowFormatDate(), `Sell limit ${quantitys} ${symbol_1} at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(6)} ${symbol_2})`);
         let orderResultAsk = await client.ExecuteOrder({
             orderType: "Limit",
@@ -146,7 +148,8 @@ const buyfun = async (client) => {
     console.log("======= BUYING ======");
     await checkBalance(client);
     let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: SYMBOL });
-    let quantitys = ((userbalance[symbol_2].available - (MIN_SYMBOL_2/2)) / lastBuyPrice).toFixed(6).toString();
+    lastBuyPrice = (lastBuyPrice*1);
+    let quantitys = ((userbalance[symbol_2].available - (MIN_SYMBOL_2/2)) / lastBuyPrice).toFixed(QUANTITY_DECIMAL_2).toString();
     let orderResultBid = await client.ExecuteOrder({
         orderType: "Limit",
         price: lastBuyPrice.toString(),
