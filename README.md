@@ -110,6 +110,10 @@ Config list
 
 ```MIN_SYMBOL_2```              = Minimum amount of 2nd token that should be available (eg. 0.1 for SOL, 5 for USDC)
 
+```QUANTITY_DECIMAL_1```        = Decimal of quantity of 1st token (0 for small price token, 2-5 for high price token)
+
+```QUANTITY_DECIMAL_2```        = Decimal of quantity of 2nd token (0 for small price token, 2-5 for high price token)
+
 ----------------------------
 VPS additional information
 ----------------------------
