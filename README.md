@@ -26,7 +26,7 @@
 
 5. Create API key ที่ https://backpack.exchange/settings/api-keys คัดลอก Key, Secret เก็บไว้ก่อน
 
-6. เติมเงินเข้ากระเป๋า Backpack อย่างน้อย 50 USDC
+6. เติมเงินเข้ากระเป๋า Backpack อย่างน้อย 30 USDC
 
 7. เปิด Powershell โดยกดปุ่ม Start แล้วพิมพ์ powershell แล้ว Enter
 
@@ -52,7 +52,7 @@
 
 ```npm start```
 
-11. บอทจะเริ่มทำการซื้อขาย สลับไปมา ระหว่าง SOL USDC
+11. บอทจะเริ่มทำการซื้อขาย สลับไปมา ระหว่าง WEN USDC (หรือคู่อื่นที่เซตใน .env)
 
 * ห้ามปิดหน้าต่างนี้ (ย่อได้) ถ้าปิดไป บอทจะหยุดทำงาน
 
@@ -69,7 +69,7 @@
 ----------------------------
 How to use
 ----------------------------
-1. Create account: [Backpack](https://backpack.exchange/refer/6ee71a32-9bf4-42fe-b13c-896c32745bc4) KYC, deposit at least 50 USDC
+1. Create account: [Backpack](https://backpack.exchange/refer/6ee71a32-9bf4-42fe-b13c-896c32745bc4) KYC, deposit at least 30 USDC
 
 2. Create backpack API: https://backpack.exchange/settings/api-keys
 
@@ -104,11 +104,11 @@ Config list
 
 ```PRICE_DECREASE_PERCENT```    = Percentage of PRICE_DIFF to decrease ask price each interval
 
-```SYMBOL```                    = Symbol to trad (eg. SOL_USDC)
+```SYMBOL```                    = Symbol to trad (eg. WEN_USDC)
 
-```MIN_SYMBOL_1```              = Minimum amount of 1st token that should be available (eg. 0.1 for SOL, 5 for USDC)
+```MIN_SYMBOL_1```              = Minimum amount of 1st token that should be available (eg. 5000 for WEN, 2 for USDC)
 
-```MIN_SYMBOL_2```              = Minimum amount of 2nd token that should be available (eg. 0.1 for SOL, 5 for USDC)
+```MIN_SYMBOL_2```              = Minimum amount of 2nd token that should be available (eg. 5000 for WEN, 2 for USDC)
 
 ```QUANTITY_DECIMAL_1```        = Decimal of quantity of 1st token (0 for small price token, 2-5 for high price token)
 
