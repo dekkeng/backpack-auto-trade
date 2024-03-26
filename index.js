@@ -86,7 +86,7 @@ const worker = async (client) => {
         let GetOpenOrders = await client.GetOpenOrders({ symbol: SYMBOL });
         if(GetOpenOrders.length > 0) {
             if(lastPriceAsk == 0) lastPriceAsk = GetOpenOrders[0].price;
-            console.log(getNowFormatDate(), `Waiting ${PRICE_DECREASE_INTERVAL} mins | Selling ${GetOpenOrders[0].quantity} ${symbol_1} at $${GetOpenOrders[0].price} (${(GetOpenOrders[0].price * GetOpenOrders[0].quantity).toFixed(2)} ${symbol_2})...`);    
+            console.log(getNowFormatDate(), `Waiting ${PRICE_DECREASE_INTERVAL} mins | Selling ${GetOpenOrders[0].quantity} ${symbol_1} at $${GetOpenOrders[0].price} (${(GetOpenOrders[0].price * GetOpenOrders[0].quantity).toFixed(6)} ${symbol_2})...`);    
             while (GetOpenOrders.length > 0) {
                 let now = new Date().getTime();
                 if( (now - lastPriceTime) > (PRICE_DECREASE_INTERVAL*60000) ) {
@@ -126,9 +126,9 @@ const sellfun = async (client) => {
             let {lastPrice: ask} = await client.Ticker({ symbol: SYMBOL });
             lastPriceAsk = ask;
         }
-        lastPriceAsk = (lastPriceAsk*1).toFixed(2);
-        let quantitys = (userbalance[symbol_1].available - 0.02).toFixed(2).toString();
-        console.log(getNowFormatDate(), `Sell limit ${quantitys} ${symbol_1} at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(2)} ${symbol_2})`);
+        lastPriceAsk = (lastPriceAsk*1).toFixed(6);
+        let quantitys = (userbalance[symbol_1].available - (MIN_SYMBOL_1/2)).toFixed(6).toString();
+        console.log(getNowFormatDate(), `Sell limit ${quantitys} ${symbol_1} at $${lastPriceAsk} (${(lastPriceAsk * quantitys).toFixed(6)} ${symbol_2})`);
         let orderResultAsk = await client.ExecuteOrder({
             orderType: "Limit",
             price: lastPriceAsk.toString(),
@@ -146,7 +146,7 @@ const buyfun = async (client) => {
     console.log("======= BUYING ======");
     await checkBalance(client);
     let {lastPrice: lastBuyPrice} = await client.Ticker({ symbol: SYMBOL });
-    let quantitys = ((userbalance[symbol_2].available - 2) / lastBuyPrice).toFixed(2).toString();
+    let quantitys = ((userbalance[symbol_2].available - (MIN_SYMBOL_2/2)) / lastBuyPrice).toFixed(6).toString();
     let orderResultBid = await client.ExecuteOrder({
         orderType: "Limit",
         price: lastBuyPrice.toString(),
