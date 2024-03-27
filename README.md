@@ -103,6 +103,8 @@ Upgrade from old version
 
 ```git pull```
 
+```mv .env .env.bak```
+
 ```cp .env.sample .env```
 
 ```notepad .env```
